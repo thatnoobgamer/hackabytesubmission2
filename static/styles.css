@@ -1,0 +1,31 @@
+.navbar {
+    color:  yellow;
+    width: 100%;
+    text-align: center;
+    height: 10vh;
+    border: 10px solid #e7e7e7;
+    background-color: black;
+
+}
+.navbar a {
+    margin-top: 6px;
+    display: inline-block;
+    padding: 30px;
+    background-color: rgb(241, 183, 241);
+    color: black;
+}
+.navbar a:hover {
+    background-color: white;
+}
+.navbar .active {
+    background-color:purple;
+}
+.navbar li {
+    border-right: 1px solid #bbb;
+}
+.navbar li:last-child {
+    border-right: none;
+}
+body {
+    background-color: hsl(0, 1%, 90%);
+}
