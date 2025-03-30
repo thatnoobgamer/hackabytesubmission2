@@ -16,26 +16,25 @@
         <a href="/contact">Contact Us</a>
     </div>
     
-    <h1 id="budcat">Budget Categories</h1>
+    <div id="budget-init">
+        <div id="budget-set">
+            <input id="budget-input" type="number" placeholder="set budget"></input>
+            <button id="budget-submit" onclick="setBudget(budgetInput.value); updateBudget()">set</button>
+        </div> 
+        initial budget: $<span id="budget"></span>
+        final budget: $<span id="budget-final"></span>
+    </div>
+
+    <h1 id="budcat">budget categories</h1>
 
     <div id="add-cat">
         <input id="cat-name" type="text" placeholder="category name" required></input>
         <input id="cat-cost" type="number" placeholder="category cost" required></input>
-
         <button id="+-button" onclick="addCategory(categoryNameInput.value, categoryCostInput.value)">+</button>
+        <button id="cat-restore" onclick="restoreCategories()">restore defaults</button>
     </div>
 
     <div id="cats">
-        <!--
-        <div class="samplecat">
-            <p class="category-input"></p>
-            <p class="category-budget-input"></p>
-            
-            <button class="remove-category-button">🗑</button>
-            <button class="edit-category-button">✏️</button>
-            
-        </div>
-        -->
     </div>
 
     <script src="{{url_for('static', filename='budget.js')}}"></script>

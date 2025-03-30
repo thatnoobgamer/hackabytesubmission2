@@ -1,232 +1,143 @@
 let categories = ["groceries", "clothing", "electronics", "furniture", "books", "sports", "health", "beauty", "automotive"];
 let categoryAmounts = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
+let budget = 0;
+let budgetSpan = document.getElementById("budget");
+let finalBudgetSpan = document.getElementById("budget-final");
+
 let categoriesDiv = document.getElementById("cats");
 
-let categoryNameInput = document.getElementById("cat-name")
-let categoryCostInput = document.getElementById("cat-cost")
+let categoryNameInput = document.getElementById("cat-name");
+let categoryCostInput = document.getElementById("cat-cost");
 
-function pushCategory(category, categoryAmount) {
-    // if not blank
-    if (category != "" && categoryAmount != "") {
-        categories.push(category);
-        categoryAmounts.push(categoryAmount);
+let budgetInput = document.getElementById("budget-input");
+
+function updateBudget() {
+    let totalExpenses = categoryAmounts.reduce((sum, amount) => sum + parseFloat(amount), 0);
+    if (budget == 0) {
+        finalBudget = 0;
     }
-
-    console.log(categories, categoryAmounts);
-
-    // clear input
-    categoryNameInput.value = "";
-    categoryCostInput.value = "";
+    else {
+        finalBudget = budget - totalExpenses;
+    }
 }
 
-function renderCategories() {
+function render() {
     categoriesDiv.innerHTML = "";
+
+    budgetSpan.innerText = `${parseFloat(budget).toFixed(2)}`;
+    let finalBudgetSpan = document.getElementById("budget-final");
+    if (finalBudgetSpan) {
+        finalBudgetSpan.textContent =  `${finalBudget.toFixed(2)}`;
+    }
 
     for (i = 0; i < categories.length; i++) {
         let categoryCard = document.createElement("div");
         categoryCard.setAttribute("class", "category-card");
 
         let categoryName = document.createElement("div");
-        categoryCard.setAttribute("class", "category-name-final");
-        categoryName.innerText = categories[i];
+        categoryName.innerHTML = categories[i];
         categoryCard.appendChild(categoryName);
 
         let categoryCost = document.createElement("div");
-        categoryCost.setAttribute("class", "category-cost-final");
-        categoryCost.innerText = categoryAmounts[i];
+        categoryCost.innerHTML = "&nbsp;$" + categoryAmounts[i] + "&nbsp;";
         categoryCard.appendChild(categoryCost);
+
+        // <button id="remove-category-button" onclick="removeCategory(this.parentElement.children[1].textContent)">🗑</button>
+        let categoryRemoveButton = document.createElement("button");
+        categoryRemoveButton.setAttribute("class", "category-remove-button");
+        categoryRemoveButton.setAttribute("onclick", "removeCategory(this.parentElement.children[0].textContent)");
+        categoryRemoveButton.textContent = "🗑";
+        categoryCard.appendChild(categoryRemoveButton);
+        
+        let categoryEditButton = document.createElement("button");
+        categoryEditButton.setAttribute("class", "category-edit-button");
+        categoryEditButton.setAttribute("onclick", "editCategory(this.parentElement.children[0].textContent)");
+        categoryEditButton.textContent = "✏️";
+        categoryCard.appendChild(categoryEditButton);
 
         categoriesDiv.appendChild(categoryCard);
     }
 }
 
-function addCategory(category, categoryAmount) {
-    pushCategory(category, categoryAmount);
-    renderCategories();
+function editCategory(category) {
+    let categoryIndex = categories.indexOf(category);
+    if (categoryIndex > -1) {
+        categoryNameInput.value = categories[categoryIndex];
+        categoryCostInput.value = categoryAmounts[categoryIndex];
+        spliceCategory(category);
+    }
 }
 
-window.onload = renderCategories();
+function update() {
+    updateBudget();
+    render();
+    saveToLocalStorage();
+}
 
-/*
+function saveToLocalStorage() {
+    localStorage.setItem("budget", JSON.stringify(budget));
+    localStorage.setItem("categories", JSON.stringify(categories));
+    localStorage.setItem("categoryAmounts", JSON.stringify(categoryAmounts));
+}
 
-function addCategory(category, categoryamount) {
-    categories.push(category);
-    categoryamounts.push(parseInt(categoryamount));
-    let budcat = document.getElementById("budcat");
-    let plusButton = document.getElementById("+");
-    
-    document.body.append(budcat);
-    document.body.append(plusButton);
-    for (let i = 0; i < categories.length; i++) {
-        let box = document.createElement("div");
-        box.className = "category-box"; 
-        box.innerHTML = `
-            <p id="budget-name">Budget Name: </p>
-            <p id="category-input"></p>
-            <p id="category-budget-input"></p>
-            <button id="remove-category-button" onclick="removeCategory(this.parentElement.children[1].textContent)">🗑</button>
-            <button id="edit-category-button" onclick="editCategory(this.parentElement.children[1].textContent)">✏️</button>
-        `;
-        document.body.appendChild(box);
-        document.getElementById("category-input").textContent = categories[i];
-        document.getElementById("category-budget-input").textContent = "Budget Amount: " + categoryamounts[i];
-        document.getElementById("category-input").id = 'category-input' + i;
-        document.getElementById("category-budget-input").id = 'category-budget-input' + i;
-        document.getElementById("remove-category-button").id = 'remove-category-button' + i;
-        document.getElementById("edit-category-button").id = 'edit-category-button' + i;
-        document.getElementById("budget-name").id = 'budget-name' + i;
+function pushCategory(category, categoryAmount) {
+    // if not blank, and category is not duplicate
+    if (category != "" && categoryAmount != "" && !categories.includes(category)) {
+        categories.push(category);
+        categoryAmounts.push(categoryAmount);
+
+        // clear input
+        categoryNameInput.value = "";
+        categoryCostInput.value = "";
+    }
+}
+
+function addCategory(category, categoryAmount) {
+    pushCategory(category, categoryAmount);
+    update();
+}
+
+function spliceCategory(category) {
+    let categoryIndex = categories.indexOf(category);
+    if (categoryIndex > -1) {
+        categories.splice(categoryIndex, 1);
+        categoryAmounts.splice(categoryIndex, 1);
     }
 }
 
 function removeCategory(category) {
-    let budcat = document.getElementById("budcat");
-    let plusButton = document.getElementById("+");
-    document.body.innerHTML = "";
-    document.body.innerHTML = `<div class="navbar">
-        <a href="/">Home</a>
-        <a class="active"href="/budget">Budget</a>
-    </div>`;
-    document.body.append(budcat);
-    document.body.append(plusButton);
-    let categoryindex = categories.indexOf(category);
-    categories.splice(categoryindex, 1);
-    categoryamounts.splice(categoryindex, 1);
-    for (let i = 0; i < categories.length; i++) {
-        let box = document.createElement("div");
-        box.className = "category-box"; 
-        box.innerHTML = `
-            <p id="budget-name">Budget Name: </p>
-            <p id="category-input"></p>
-            <p id="category-budget-input"></p>
-            <button id="remove-category-button" onclick="removeCategory(this.parentElement.children[1].textContent)">🗑</button>
-            <button id="edit-category-button" onclick="editCategory(this.parentElement.children[1].textContent)">✏️</button>
-        `;
-        document.body.appendChild(box);
-        document.getElementById("category-input").textContent = categories[i];
-        document.getElementById("category-budget-input").textContent = "Budget Amount: " + categoryamounts[i];
-        document.getElementById("category-input").id = 'category-input' + i;
-        document.getElementById("category-budget-input").id = 'category-budget-input' + i;
-        document.getElementById("remove-category-button").id = 'remove-category-button' + i;
-        document.getElementById("edit-category-button").id = 'edit-category-button' + i;
-        document.getElementById("budget-name").id = 'budget-name' + i;
+    if (confirm("Are you sure you want to remove this category?")) {
+        spliceCategory(category);
+        update();
+    }
+    else {
+        alert("No changes made.");
     }
 }
 
-function removeCategoryThere(category) {
-    let budcat = document.getElementById("budcat");
-    let plusButton = document.getElementById("+");
-    document.body.innerHTML = "";
-    document.body.innerHTML = `<div class="navbar">
-        <a href="/">Home</a>
-        <a class="active" href="/budget">Budget</a>
-    </div>`;
-    document.body.append(budcat);
-    document.body.append(plusButton);
-    let categoryindex = categories.indexOf(category);
-    categories.splice(categoryindex, 1);
-    categoryamounts.splice(categoryindex, 1);
-    for (let i = 0; i < categories.length; i++) {
-        let box = document.createElement("div");
-        box.className = "category-box-alreadythere"; 
-        box.innerHTML = `
-            <p id="budget-name">Budget Name: </p>
-            <p id="category-input-alreadythere"></p>
-            <p id="category-budget-input-alreadythere"></p>
-            <button id="remove-category-button" onclick="removeCategoryThere(this.parentElement.children[1].textContent)">🗑</button>
-            <button id="edit-category-button" onclick="editCategory(this.parentElement.children[1].textContent)">✏️</button>
-        `;
-        document.body.appendChild(box);
-        document.getElementById("category-input-alreadythere").textContent = categories[i];
-        document.getElementById("category-budget-input-alreadythere").textContent = "Budget Amount: " + categoryamounts[i];
-        document.getElementById("category-input-alreadythere").id = 'category-input-alreadythere' + i;
-        document.getElementById("category-budget-input-alreadythere").id = 'category-budget-input-alreadythere' + i;
-        document.getElementById("remove-category-button").id = 'remove-category-button' + i;
-        document.getElementById("edit-category-button").id = 'edit-category-button' + i;
-        document.getElementById("budget-name").id = 'budget-name' + i;
+function setBudget(budgetNew) {
+    if (budgetNew != "") {
+        budget = budgetNew;
+    }
+    update();
+}
+
+function restoreCategories() {
+    if (confirm("Are you sure you want to restore the default categories?")) {
+        localStorage.removeItem("categories");
+        localStorage.removeItem("categoryAmounts");
+        window.location.reload();
+    }
+    else {
+        alert("No changes made.");
     }
 }
 
-function makeCategoryAdditionBox() {
-    let box = document.createElement("div");
-    box.className = "category-box";
-    box.innerHTML = `
-        <input type="text" id="category-input" placeholder="Enter category name" />
-        <input type="text" id="category-budget-input" placeholder="Enter budget amount" />
-        <button id="add-category-button" onclick="addCategory(this.parentElement.firstElementChild.value, this.parentElement.children[1].value)">Add Category</button>
-        <button id="remove-category-button" onclick="this.parentElement.remove()">🗑</button>
-    `;
-    document.body.appendChild(box); 
+function onLoad() {
+    localStorage.getItem("categories") ? categories = JSON.parse(localStorage.getItem("categories")) : categories = categories;
+    localStorage.getItem("categoryAmounts") ? categoryAmounts = JSON.parse(localStorage.getItem("categoryAmounts")) : categoryAmounts = categoryAmounts;
+    update();
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    for (let i = 0; i < categories.length; i++) {
-        let box = document.createElement("div");
-        box.className = "category-box-alreadythere"; 
-        box.innerHTML = `
-            <p id="budget-name">Budget Name: </p>
-            <p id="category-input-alreadythere"></p>
-            <p id="category-budget-input-alreadythere"></p>
-            <button id="remove-category-button" onclick="removeCategoryThere(this.parentElement.children[1].textContent)">🗑</button>
-            <button id="edit-category-button" onclick="editCategory(this.parentElement.children[1].textContent)">✏️</button>
-        `;
-        document.body.appendChild(box);
-        document.getElementById("category-input-alreadythere").textContent = categories[i];
-        document.getElementById("category-budget-input-alreadythere").textContent = "Budget Amount: " + categoryamounts[i];
-        document.getElementById("category-input-alreadythere").id = 'category-input-alreadythere' + i;
-        document.getElementById("category-budget-input-alreadythere").id = 'category-budget-input-alreadythere' + i;
-        document.getElementById("remove-category-button").id = 'remove-category-button' + i;
-        document.getElementById("edit-category-button").id = 'edit-category-button' + i;
-        document.getElementById("budget-name").id = 'budget-name' + i;
-    }
-}, false);
-function editCategory(category) {
-    let categoryindex = categories.indexOf(category);
-    if (categoryindex === -1) return;
-
-    let box = document.createElement("div");
-    box.className = "category-box";
-    box.innerHTML = `
-        <input type="text" id="category-input" placeholder="Enter new category name" value="${categories[categoryindex]}" />
-        <input type="text" id="category-budget-input" placeholder="Enter new budget amount" value="${categoryamounts[categoryindex]}" />
-        <button id="edit-category-button" onclick="submitEditCategory(this.parentElement.firstElementChild.value, this.parentElement.children[1].value, '${category}')">Confirm Category Change</button>
-    `;
-    document.body.innerHTML = ""; // Clear the page
-    document.body.appendChild(box); // Add the edit box
-}
-
-function submitEditCategory(newcategory, newcategoryamount, oldcategory) {
-    let categoryindex = categories.indexOf(oldcategory);
-    if (categoryindex !== -1) {
-        categories[categoryindex] = newcategory;
-        categoryamounts[categoryindex] = parseInt(newcategoryamount);
-        document.body.innerHTML = "";
-        document.body.innerHTML = `<div class="navbar">
-            <a href="/">Home</a>
-            <a class="active" href="/budget">Budget</a>
-            </div>
-        <h1 id="budcat">Budget Categories</h1>
-        <button id="+" onclick="makeCategoryAdditionBox()">+</button>`;
-        for (let i = 0; i < categories.length; i++) {
-            let box = document.createElement("div");
-            box.className = "category-box-alreadythere"; 
-            box.innerHTML = `
-                <p id="budget-name">Budget Name: </p>
-                <p id="category-input-alreadythere"></p>
-                <p id="category-budget-input-alreadythere"></p>
-                <button id="remove-category-button" onclick="removeCategoryThere(this.parentElement.children[1].textContent)">🗑</button>
-                <button id="edit-category-button" onclick="editCategory(this.parentElement.children[1].textContent)">✏️</button>
-            `;
-            document.body.appendChild(box);
-            document.getElementById("category-input-alreadythere").textContent = categories[i];
-            document.getElementById("category-budget-input-alreadythere").textContent = "Budget Amount: " + categoryamounts[i];
-            document.getElementById("category-input-alreadythere").id = 'category-input-alreadythere' + i;
-            document.getElementById("category-budget-input-alreadythere").id = 'category-budget-input-alreadythere' + i;
-            document.getElementById("remove-category-button").id = 'remove-category-button' + i;
-            document.getElementById("edit-category-button").id = 'edit-category-button' + i;
-            document.getElementById("budget-name").id = 'budget-name' + i;
-        }
-    }
-}
-
-*/
+window.onload = onLoad();
