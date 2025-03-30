@@ -1,16 +1,61 @@
 let categories = ["groceries", "clothing", "electronics", "furniture", "books", "sports", "health", "beauty", "automotive"];
-let categoryamounts = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+let categoryAmounts = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+let categoriesDiv = document.getElementById("cats");
+
+let categoryNameInput = document.getElementById("cat-name")
+let categoryCostInput = document.getElementById("cat-cost")
+
+function pushCategory(category, categoryAmount) {
+    // if not blank
+    if (category != "" && categoryAmount != "") {
+        categories.push(category);
+        categoryAmounts.push(categoryAmount);
+    }
+
+    console.log(categories, categoryAmounts);
+
+    // clear input
+    categoryNameInput.value = "";
+    categoryCostInput.value = "";
+}
+
+function renderCategories() {
+    categoriesDiv.innerHTML = "";
+
+    for (i = 0; i < categories.length; i++) {
+        let categoryCard = document.createElement("div");
+        categoryCard.setAttribute("class", "category-card");
+
+        let categoryName = document.createElement("div");
+        categoryCard.setAttribute("class", "category-name-final");
+        categoryName.innerText = categories[i];
+        categoryCard.appendChild(categoryName);
+
+        let categoryCost = document.createElement("div");
+        categoryCost.setAttribute("class", "category-cost-final");
+        categoryCost.innerText = categoryAmounts[i];
+        categoryCard.appendChild(categoryCost);
+
+        categoriesDiv.appendChild(categoryCard);
+    }
+}
+
+function addCategory(category, categoryAmount) {
+    pushCategory(category, categoryAmount);
+    renderCategories();
+}
+
+window.onload = renderCategories();
+
+/*
 
 function addCategory(category, categoryamount) {
     categories.push(category);
     categoryamounts.push(parseInt(categoryamount));
     let budcat = document.getElementById("budcat");
     let plusButton = document.getElementById("+");
-    document.body.innerHTML = "";
-    document.body.innerHTML = `<div class="navbar">
-        <a href="/">Home</a>
-        <a class="active" href="/budget">Budget</a>
-    </div>`;
+    
     document.body.append(budcat);
     document.body.append(plusButton);
     for (let i = 0; i < categories.length; i++) {
@@ -183,3 +228,5 @@ function submitEditCategory(newcategory, newcategoryamount, oldcategory) {
         }
     }
 }
+
+*/

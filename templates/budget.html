@@ -1,17 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Title</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='budget.css')}}" type="text/css"/>
-    <script src="{{url_for('static', filename='budget.js')}}"></script>
+    <title>Budgeting</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/09e48a39e3.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="navbar">
-        <a href="/">Home</a>
+        <a href="/" style="float: left; display: block; position: absolute;"><i class="fa-solid fa-piggy-bank fa-2xl"></i></a>
         <a class="active" href="/budget">Budget</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact Us</a>
     </div>
     
     <h1 id="budcat">Budget Categories</h1>
-    <button id="+"onclick="makeCategoryAdditionBox()">+</button>
+
+    <div id="add-cat">
+        <input id="cat-name" type="text" placeholder="category name" required></input>
+        <input id="cat-cost" type="number" placeholder="category cost" required></input>
+
+        <button id="+-button" onclick="addCategory(categoryNameInput.value, categoryCostInput.value)">+</button>
+    </div>
+
+    <div id="cats">
+        <!--
+        <div class="samplecat">
+            <p class="category-input"></p>
+            <p class="category-budget-input"></p>
+            
+            <button class="remove-category-button">🗑</button>
+            <button class="edit-category-button">✏️</button>
+            
+        </div>
+        -->
+    </div>
+
+    <script src="{{url_for('static', filename='budget.js')}}"></script>
 </body>
 </html>

@@ -1,31 +1,57 @@
 .navbar {
-    color:  yellow;
     width: 100%;
     text-align: center;
     height: 10vh;
-    border: 10px solid #e7e7e7;
-    background-color: black;
-
+    background-color: #d7e5ed;
+    font-size: large;
+    padding: 0;
+    margin: 0;
+    border-bottom: 3px black;
+    border-style: hidden hidden solid hidden;
 }
 .navbar a {
     margin-top: 6px;
     display: inline-block;
     padding: 30px;
-    background-color: rgb(241, 183, 241);
+    background-color: #d7e5ed;
     color: black;
+    text-decoration: none;
+    justify-content: space-between;
+    
 }
 .navbar a:hover {
     background-color: white;
 }
 .navbar .active {
-    background-color:purple;
+    background-color: #e3ecf2;
 }
-.navbar li {
-    border-right: 1px solid #bbb;
-}
-.navbar li:last-child {
-    border-right: none;
-}
+
 body {
-    background-color: hsl(0, 1%, 90%);
+    background-color: #d7e5ed;
+    text-align: center;
+    font-family: "Figtree", sans-serif;
+    font-optical-sizing: auto;
+    font-size: x-large;
+    font-style: normal;
+}
+
+.category-box, .category-box-alreadythere {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin: 16px;
+    background-color: #fff;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: auto;
+
+}
+
+.card p {
+    font-size: 1em;
+    color: #666;
+    text-align: center;
 }
